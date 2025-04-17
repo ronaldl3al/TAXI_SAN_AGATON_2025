@@ -1,6 +1,7 @@
 import flet as ft
 from view.socios.socio import vista_socios
 from utils.colors import Colores
+from view.menus.menu import vista_menu
 
 class BotonesNevegacion:
     @staticmethod
@@ -91,7 +92,7 @@ class MenuPage(ft.View):
             width=200,
             padding=10,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
-            border_radius=ft.BorderRadius(5, 5, 5, 5),
+            border_radius=ft.BorderRadius(2, 2, 2, 2),
             alignment=ft.alignment.top_left
         )
 
@@ -117,7 +118,7 @@ class MenuPage(ft.View):
             height=50,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
             padding=10,
-            border_radius=ft.BorderRadius(5, 5, 5, 5),
+            border_radius=ft.BorderRadius(2, 2, 2, 2),
             alignment=ft.alignment.center_left
         )
 
@@ -150,7 +151,7 @@ class MenuPage(ft.View):
             if ruta_actual == "/socios":
                 contenido = vista_socios(self.pagina)
             elif ruta_actual == "/vehiculos":
-                contenido = ft.Text("Contenido de VEHÍCULOS", size=20)
+                contenido = vista_socios(self.pagina)
             elif ruta_actual == "/avances":
                 contenido = ft.Text("Contenido de AVANCES", size=20)
             elif ruta_actual == "/sanciones":
@@ -158,7 +159,7 @@ class MenuPage(ft.View):
             elif ruta_actual == "/finanzas":
                 contenido = ft.Text("Contenido de FINANZAS", size=20)
             else:
-                contenido = ft.Text("Bienvenido al INICIO", size=20)
+                contenido = vista_menu(self.pagina)
 
             self.area_contenido.content = contenido
             self.pagina.update()
