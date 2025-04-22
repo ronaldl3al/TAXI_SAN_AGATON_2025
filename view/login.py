@@ -1,6 +1,5 @@
 import flet as ft
 from auth.auth import AuthControlador
-import mysql.connector.errors
 from utils.alerts import mostrar_mensaje
 from utils.colors import Colores 
 
@@ -169,5 +168,5 @@ class LoginPage(ft.View):
                 self.page.go("/menu")
             else:
                 mostrar_mensaje(self.page, "Credenciales incorrectas", tipo="error")
-        except mysql.connector.errors.Error as err:
-            mostrar_mensaje(self.page, f"Error de base de datos: {err}", tipo="error")
+        except Exception as err:
+            mostrar_mensaje(self.page, f"Error: {err}", tipo="error")
