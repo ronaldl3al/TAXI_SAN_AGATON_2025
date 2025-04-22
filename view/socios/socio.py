@@ -76,7 +76,7 @@ def vista_socios(page: ft.Page):
     if rol in ["Admin", "Editor"]:
         btn_agregar = ft.IconButton(
             icon=ft.icons.ADD,
-            on_click=lambda e: mostrar_bottomSheet (page, "Agregar botón presionado", tipo="info"),
+            on_click=lambda e: mostrar_bottomSheet(page, "Agregar Socio", tipo="formulario"),
             icon_size=40,
             style=ft.ButtonStyle(color="#06F58E")
         )

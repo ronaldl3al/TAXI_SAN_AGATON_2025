@@ -1,9 +1,10 @@
-
 import flet as ft
+from datos.datos import datos_de_prueba 
 
 class Vista_Menu:
     def __init__(self, page: ft.Page):
         self.page = page
+        self.card_socios = None  # Referencia a la tarjeta de socios
         self.menu_container = self.build()
 
     def design_cards(self):
@@ -53,13 +54,19 @@ class Vista_Menu:
                 )
             )
 
-        card1 = card("SOCIOS", "10", ft.Icon(ft.icons.PEOPLE_OUTLINE, color=accent_color, size=30))
+        # Creamos la tarjeta de socios como atributo de instancia
+        self.card_socios = card(
+            "SOCIOS", 
+            str(len(datos_de_prueba)),
+            ft.Icon(ft.icons.PEOPLE_OUTLINE, color=accent_color, size=30)
+        )
+        
         card2 = card("VEHICULOS", "10", ft.Icon(ft.icons.LOCAL_TAXI_OUTLINED, color=accent_color, size=30))
         card3 = card("AVANCES", "6", ft.Icon(ft.icons.WORK_OUTLINE, color=accent_color, size=30))
 
         cards_row = ft.Row(
             alignment=ft.MainAxisAlignment.CENTER,
-            controls=[card1, card2, card3]
+            controls=[self.card_socios, card2, card3]
         )
 
         container_cards = ft.Column(
@@ -71,6 +78,13 @@ class Vista_Menu:
         )
         return container_cards
 
+    def actualizar_contador_socios(self):
+        """Actualiza el contador de socios dinámicamente"""
+        nueva_cantidad = len(datos_de_prueba)
+        # Actualizamos el texto del valor en la tarjeta
+        self.card_socios.content.controls[2].value = str(nueva_cantidad)
+        self.card_socios.update()
+
     def build(self):
         container1 = self.design_cards()
         container2 = ft.Container(
@@ -80,7 +94,6 @@ class Vista_Menu:
             bgcolor="#282c34",
             content=ft.Text("Menú de Navegación", color="white", size=20)
         )
-
 
         container3 = ft.Container(
             expand=True,
@@ -109,8 +122,5 @@ class Vista_Menu:
         )
 
 def vista_menu(page: ft.Page):
-    """
-    Función que retorna la vista del menú, similar a la función vista_socios.
-    """
     menu = Vista_Menu(page)
     return menu.menu_container
