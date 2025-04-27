@@ -22,21 +22,40 @@ def mostrar_mensaje(page, mensaje, tipo="info"):
         bgcolor=bgcolor,
         open=True
     )
-    page.open(snack)
+    page.snack_bar = snack
     page.update()
 
 def mostrar_bottomSheet(page, mensaje, tipo="mensaje"):
     if tipo == "formulario":
         bgcolor = Colores.AZUL2
         text_color = Colores.AMARILLO1
-        # Crear el formulario de Socio
+        
+        # Crear instancia del formulario sin el parámetro controls
         socio_form = SociosForm(
             socios_page=page,
             titulo=mensaje,
             accion="Agregar",
-            socio=None
+            socio=None  # Asegúrate que este parámetro sea válido para tu clase
         )
-        form_content = socio_form.formulario
+        
+        # Crear controles adicionales por fuera del formulario
+        form_content = ft.Column(
+            controls=[
+            ft.Row(
+                controls=[
+                ft.Text(mensaje, style=ft.TextStyle(size=20, weight="bold", color=Colores.AMARILLO1)),
+                ft.IconButton(
+                    icon=ft.icons.CANCEL,
+                    icon_color="#eb3936",
+                    on_click=lambda _: page.close(bs)
+                )
+                ],
+                alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+            ),
+            ft.Divider(color=Colores.AMARILLO1),
+            socio_form.formulario,  # Asumiendo que formulario es la propiedad que contiene los controles
+            ]
+        )
     else:
         bgcolor = Colores.AMARILLO1
         text_color = Colores.AMARILLO1
@@ -52,7 +71,7 @@ def mostrar_bottomSheet(page, mensaje, tipo="mensaje"):
         )
 
     def handle_dismissal(e):
-        print("BottomSheet cerrado")
+        print("FORMULARIO CERRADO")
 
     bs = ft.BottomSheet(
         on_dismiss=handle_dismissal,
@@ -60,7 +79,7 @@ def mostrar_bottomSheet(page, mensaje, tipo="mensaje"):
             padding=20,
             bgcolor=bgcolor,
             border_radius=5,
-            height=300,  # Ajusta la altura según necesidad
+            height=400,
             content=form_content
         ),
     )

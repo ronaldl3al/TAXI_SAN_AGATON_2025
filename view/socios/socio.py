@@ -78,7 +78,7 @@ class SociosView:
                 icon=ft.icons.ADD,
                 icon_size=40,
                 style=ft.ButtonStyle(color="#06F58E"),
-                on_click=lambda e: mostrar_bottomSheet(self.page, "Agregar Socio", tipo="formulario")
+                on_click=lambda e: mostrar_bottomSheet(self.page, " AGREGAR SOCIO", tipo="formulario")
             )
         return ft.Container()
 

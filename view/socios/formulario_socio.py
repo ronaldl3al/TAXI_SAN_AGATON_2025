@@ -8,7 +8,7 @@ class SociosForm:
     def __init__(self, socios_page, titulo, accion, socio=None):
         self.socios_page = socios_page
         self.accion = accion
-        self.formulario = self.crear_formulario_socio(titulo, accion, socio)
+        self.formulario = self.formulario_socio(titulo, accion, socio)
 
     def formulario_socio(self, titulo, accion, socio=None):
         control = ft.TextField(
@@ -107,33 +107,23 @@ class SociosForm:
         )
 
         formulario = ft.Container(
-            ft.Column([
-                ft.Container(
-                    content=ft.Row([nombres, apellidos], spacing=15),
-
-                ),
-                ft.Container(
-                    content=ft.Row([control, cedula, fecha_nacimiento, telefono], spacing=15),
-
-                ),
-                ft.Container(
-                    content=ft.Row([direccion, rif], spacing=15),
-
-                ),
-                ft.Row(
-                    [
-                        ft.TextButton("Cancelar", icon=ft.icons.CANCEL, style=ft.ButtonStyle(color="#eb3936"), on_click=lambda _: self.socios_page.cerrar_bottomsheet()),
-                        ft.TextButton("Guardar", icon=ft.icons.SAVE, style=ft.ButtonStyle(color="#06F58E"), on_click=lambda _: self.guardar_socio(
-                            cedula, nombres, apellidos, direccion, telefono, control, rif, fecha_nacimiento
-                        ))
-                    ],
-                    alignment=ft.MainAxisAlignment.END
-                )
+            content=ft.Column([
+                ft.Row([nombres, apellidos], spacing=15),
+                ft.Row([control, cedula, fecha_nacimiento, telefono], spacing=15),
+                ft.Row([direccion, rif], spacing=15),
+                ft.Row([
+                    ft.ElevatedButton(
+                        content=ft.Row([ft.Icon(ft.icons.SAVE, color=Colores.NEGRO1),
+                                        ft.Text("Agregar", color=Colores.NEGRO1, size=16, weight=ft.FontWeight.BOLD)],
+                                    spacing=5),
+                        on_click=lambda _: self.guardar_socio(cedula, nombres, apellidos, direccion, telefono, control, rif, fecha_nacimiento),
+                        style=ft.ButtonStyle(bgcolor=Colores.AMARILLO1)
+                    )
+                ], alignment=ft.MainAxisAlignment.END)
             ]),
             padding=20,
             border_radius=15,
         )
-
         return formulario
 
     # Métodos de validación de datos del formulario
