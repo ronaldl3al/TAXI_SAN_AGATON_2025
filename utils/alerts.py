@@ -1,89 +1,89 @@
 # utils/helpers.py
 import flet as ft
 from utils.colors import Colores
-from view.socios.formulario_socio import SociosForm
 
-def mostrar_mensaje(page, mensaje, tipo="info"):
-    if tipo == "error":
-        bgcolor = ft.colors.RED_800
-        text_color = ft.colors.WHITE
-    elif tipo == "success":
-        bgcolor = ft.colors.GREEN
-        text_color = ft.colors.WHITE
-    elif tipo == "pdf":
-        bgcolor = "#4511ED"
-        text_color = ft.colors.WHITE
-    else:
-        bgcolor = ft.colors.BLUE_GREY
-        text_color = ft.colors.WHITE
 
-    snack = ft.SnackBar(
-        content=ft.Text(mensaje, color=text_color),
-        bgcolor=bgcolor,
-        open=True
-    )
-    page.snack_bar = snack
-    page.update()
+class UtilMensajes:
+    @staticmethod
+    def mostrar_snack(page, texto, tipo="info"):
+        if tipo == "error":
+            fondo = ft.colors.RED_800
+            color = ft.colors.WHITE
+        elif tipo == "success":
+            fondo = ft.colors.GREEN
+            color = ft.colors.WHITE
+        elif tipo == "pdf":
+            fondo = "#4511ED"
+            color = ft.colors.WHITE
+        else:
+            fondo = ft.colors.BLUE_GREY
+            color = ft.colors.WHITE
 
-def mostrar_bottomSheet(page, mensaje, tipo="mensaje"):
-    if tipo == "formulario":
-        bgcolor = Colores.AZUL2
-        text_color = Colores.AMARILLO1
-        
-        # Crear instancia del formulario sin el parámetro controls
-        socio_form = SociosForm(
-            socios_page=page,
-            titulo=mensaje,
-            accion="Agregar",
-            socio=None  # Asegúrate que este parámetro sea válido para tu clase
+        snack = ft.SnackBar(
+            content=ft.Text(texto, color=color),
+            bgcolor=fondo,
+            open=True
         )
-        
-        # Crear controles adicionales por fuera del formulario
-        form_content = ft.Column(
-            controls=[
-            ft.Row(
+        page.open(snack)
+        page.update()
+
+    @staticmethod
+    def mostrar_sheet(page, titulo, tipo="mensaje", socio=None):
+        # Importa aquí para evitar circular import
+        if tipo == "formulario":
+            from view.socios.formulario_socio import SociosForm
+
+            fondo = Colores.AZUL2
+            contenido_form = SociosForm(
+                socios_page=page,
+                titulo=titulo,
+                accion="agregar" if socio is None else "actualizar",
+                socio=socio
+            ).formulario
+
+            contenido = ft.Column([
+                ft.Row(
+                    controls=[
+                        ft.Text(
+                            titulo,
+                            style=ft.TextStyle(size=20, weight="bold", color=Colores.AMARILLO1)
+                        ),
+                        ft.IconButton(
+                            icon=ft.icons.CANCEL,
+                            icon_color="#eb3936",
+                            on_click=lambda _: page.close(bs)
+                        )
+                    ],
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                ),
+                ft.Divider(color=Colores.AMARILLO1),
+                contenido_form
+            ])
+        else:
+            fondo = Colores.AMARILLO1
+            contenido = ft.Column(
+                tight=True,
                 controls=[
-                ft.Text(mensaje, style=ft.TextStyle(size=20, weight="bold", color=Colores.AMARILLO1)),
-                ft.IconButton(
-                    icon=ft.icons.CANCEL,
-                    icon_color="#eb3936",
-                    on_click=lambda _: page.close(bs)
-                )
-                ],
-                alignment=ft.MainAxisAlignment.SPACE_BETWEEN
-            ),
-            ft.Divider(color=Colores.AMARILLO1),
-            socio_form.formulario,  # Asumiendo que formulario es la propiedad que contiene los controles
-            ]
+                    ft.Text(titulo, color=Colores.BLANCO),
+                    ft.ElevatedButton(
+                        "Cerrar",
+                        on_click=lambda _: page.close(bs)
+                    )
+                ]
+            )
+
+        def _al_cerrar(e):
+            print("SHEET CERRADO")
+
+        bs = ft.BottomSheet(
+            on_dismiss=_al_cerrar,
+            content=ft.Container(
+                padding=20,
+                bgcolor=fondo,
+                border_radius=5,
+                height=400,
+                content=contenido
+            )
         )
-    else:
-        bgcolor = Colores.AMARILLO1
-        text_color = Colores.AMARILLO1
-        form_content = ft.Column(
-            tight=True,
-            controls=[
-                ft.Text(mensaje, color=text_color),
-                ft.ElevatedButton(
-                    "Cerrar",
-                    on_click=lambda _: page.close(bs)  # Aquí estaba el problema
-                )
-            ],  # Este paréntesis faltaba
-        )
-
-    def handle_dismissal(e):
-        print("FORMULARIO CERRADO")
-
-    bs = ft.BottomSheet(
-        on_dismiss=handle_dismissal,
-        content=ft.Container(
-            padding=20,
-            bgcolor=bgcolor,
-            border_radius=5,
-            height=400,
-            content=form_content
-        ),
-    )
-
-    page.open(bs)
-    page.update()
-
+        page.open(bs)
+        page.update()

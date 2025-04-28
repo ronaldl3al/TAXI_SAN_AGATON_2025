@@ -1,163 +1,179 @@
-
 import flet as ft
 import re
 from datetime import datetime
 from utils.colors import Colores
+from utils.alerts import UtilMensajes
 
 class SociosForm:
     def __init__(self, socios_page, titulo, accion, socio=None):
         self.socios_page = socios_page
         self.accion = accion
-        self.formulario = self.formulario_socio(titulo, accion, socio)
 
-    def formulario_socio(self, titulo, accion, socio=None):
-        control = ft.TextField(
+        # Creamos los campos como atributos
+        self.campo_control = ft.TextField(
+            label="Control",
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            focused_border_color=Colores.AMARILLO1, 
-            label="Control", 
-            max_length=2, 
-            width=100, 
-            input_filter=ft.NumbersOnlyInputFilter(), 
-           )
-        nombres = ft.TextField(
-            border_radius=5,
-            bgcolor=Colores.GRIS,
-            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            border_color=Colores.BLANCO, 
-            focused_border_color=Colores.AMARILLO1, 
+            width=100,
+            max_length=2,
+            input_filter=ft.NumbersOnlyInputFilter(),
+        )
+        self.campo_nombres = ft.TextField(
             label="Nombres",
-            width=275,  
-            max_length=30, 
-            on_change=self.validar_texto
-        )
-        apellidos = ft.TextField(
-            border_radius=5, 
-            border_color=Colores.BLANCO, 
-            bgcolor=Colores.GRIS,
-            focused_border_color=Colores.AMARILLO1, 
-            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            label="Apellidos", 
-            width=275, 
-            max_length=30, 
-            on_change=self.validar_texto
-        )
-        cedula = ft.TextField(
             border_radius=5,
+            border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
-            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            border_color=Colores.BLANCO, 
-            focused_border_color=Colores.AMARILLO1, 
-            label="Cédula", 
-            max_length=11, 
-            width=125, 
-            hint_text="V-/E-", 
-            on_change=self.validar_cedula
-        )
-        telefono = ft.TextField(
-            border_radius=5, 
-            bgcolor=Colores.GRIS,
-            border_color=Colores.BLANCO, 
-            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            focused_border_color=Colores.AMARILLO1, 
-            label="Teléfono", 
-            max_length=15, 
-            width=155, 
-            prefix_text="+58 ", 
-            input_filter=ft.NumbersOnlyInputFilter(), 
-            hint_text="414 1234567", 
-            )
-        direccion = ft.TextField(
-            border_radius=5, 
-            bgcolor=Colores.GRIS,
-            border_color=Colores.BLANCO, 
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            label="Dirección", 
-            width=370, 
-            max_length=50, 
-            hint_text="Municipio/Urb/Sector/Calle/Casa", 
-            multiline=True)
-        rif = ft.TextField(
-            border_radius=5, 
+            width=275,
+            max_length=30,
+            on_change=self.validar_texto,
+        )
+        self.campo_apellidos = ft.TextField(
+            label="Apellidos",
+            border_radius=5,
+            border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
-            border_color=Colores.BLANCO, 
-            focused_border_color=Colores.AMARILLO1,  # Cambiar el color del borde enfocado
+            focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            label="RIF", 
-            width=180, 
-            max_length=13, 
-            on_change=self.validar_rif,
+            width=275,
+            max_length=30,
+            on_change=self.validar_texto,
+        )
+        self.campo_cedula = ft.TextField(
+            label="Cédula",
+            border_radius=5,
+            border_color=Colores.BLANCO,
+            bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
+            width=125,
+            max_length=11,
+            hint_text="V-/E-",
+            on_change=self.validar_cedula,
+        )
+        self.campo_fecha = ft.TextField(
+            label="Fecha Nacimiento",
+            border_radius=5,
+            border_color=Colores.BLANCO,
+            bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
+            width=140,
+            max_length=10,
+            hint_text="AAAA-MM-DD",
+            on_change=self.validar_fecha_nacimiento,
+        )
+        self.campo_telefono = ft.TextField(
+            label="Teléfono",
+            border_radius=5,
+            border_color=Colores.BLANCO,
+            bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
+            width=155,
+            max_length=15,
+            prefix_text="+58 ",
+            hint_text="414 1234567",
+            input_filter=ft.NumbersOnlyInputFilter(),
+        )
+        self.campo_direccion = ft.TextField(
+            label="Dirección",
+            border_radius=5,
+            border_color=Colores.BLANCO,
+            bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
+            width=370,
+            max_length=50,
+            hint_text="Municipio/Urb/Sector/Calle/Casa",
+            multiline=True,
+        )
+        self.campo_rif = ft.TextField(
+            label="RIF",
+            border_radius=5,
+            border_color=Colores.BLANCO,
+            bgcolor=Colores.GRIS,
+            focused_border_color=Colores.AMARILLO1,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
+            width=180,
+            max_length=13,
             hint_text="V121233211",
-            error_style=ft.TextStyle(color="#FF5733"),  # Cambiar el color del texto de error
-        )
-        fecha_nacimiento = ft.TextField(
-            border_radius=5, 
-            bgcolor=Colores.GRIS,
-            border_color=Colores.BLANCO, 
-            focused_border_color=Colores.AMARILLO1,
-            label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
-            label="Fecha Nacimiento", 
-            max_length=10, 
-            width=140, 
-            hint_text="AAAA-MM-DD", 
-            on_change=self.validar_fecha_nacimiento
+            on_change=self.validar_rif,
+            error_style=ft.TextStyle(color="#FF5733"),
         )
 
-        formulario = ft.Container(
+        # Botón principal
+        boton_guardar = ft.ElevatedButton(
+            content=ft.Row([
+                ft.Icon(ft.icons.SAVE, color=Colores.NEGRO1),
+                ft.Text(
+                    "Agregar" if accion == "agregar" else "Actualizar",
+                    color=Colores.NEGRO1,
+                    size=16,
+                    weight=ft.FontWeight.BOLD
+                )
+            ], spacing=5),
+            on_click=lambda _: self.guardar_socio(),
+            style=ft.ButtonStyle(bgcolor=Colores.AMARILLO1),
+        )
+
+        # Contenedor del formulario
+        self.formulario = ft.Container(
             content=ft.Column([
-                ft.Row([nombres, apellidos], spacing=15),
-                ft.Row([control, cedula, fecha_nacimiento, telefono], spacing=15),
-                ft.Row([direccion, rif], spacing=15),
-                ft.Row([
-                    ft.ElevatedButton(
-                        content=ft.Row([ft.Icon(ft.icons.SAVE, color=Colores.NEGRO1),
-                                        ft.Text("Agregar", color=Colores.NEGRO1, size=16, weight=ft.FontWeight.BOLD)],
-                                    spacing=5),
-                        on_click=lambda _: self.guardar_socio(cedula, nombres, apellidos, direccion, telefono, control, rif, fecha_nacimiento),
-                        style=ft.ButtonStyle(bgcolor=Colores.AMARILLO1)
-                    )
-                ], alignment=ft.MainAxisAlignment.END)
+                ft.Row([self.campo_nombres, self.campo_apellidos], spacing=15),
+                ft.Row([self.campo_control, self.campo_cedula, self.campo_fecha, self.campo_telefono], spacing=15),
+                ft.Row([self.campo_direccion, self.campo_rif], spacing=15),
+                ft.Row([boton_guardar], alignment=ft.MainAxisAlignment.END)
             ]),
             padding=20,
             border_radius=15,
         )
-        return formulario
 
-    # Métodos de validación de datos del formulario
+    def guardar_socio(self):
+        try:
+            # ... lógica de guardado ...
+            UtilMensajes.mostrar_snack(self.socios_page, "Socio guardado con éxito", tipo="success")
+
+            # Limpiar todos los campos tras guardar
+            for campo in [
+                self.campo_control,
+                self.campo_nombres,
+                self.campo_apellidos,
+                self.campo_cedula,
+                self.campo_fecha,
+                self.campo_telefono,
+                self.campo_direccion,
+                self.campo_rif,
+            ]:
+                campo.value = ""
+                campo.error_text = None
+                campo.update()
+
+        except Exception as err:
+            UtilMensajes.mostrar_snack(self.socios_page, f"Error al guardar: {err}", tipo="error")
+
+    # Validaciones
     def validar_fecha_nacimiento(self, e):
-        if Validacion.validar_fecha(e.control.value):
-            e.control.error_text = None
-            e.control.update()
-        else:
-            e.control.error_text = "AAAA-MM-DD"
-            e.control.update()
+        e.control.error_text = None if Validacion.validar_fecha(e.control.value) else "AAAA-MM-DD"
+        e.control.update()
 
     def validar_cedula(self, e):
-        if Validacion.validar_cedula(e.control.value):
-            e.control.error_text = None
-            e.control.update()
-        else:
-            e.control.error_text = "'V-' o 'E-'"
-            e.control.update()
+        e.control.error_text = None if Validacion.validar_cedula(e.control.value) else "'V-' o 'E-'"
+        e.control.update()
 
     def validar_texto(self, e):
-        if Validacion.validar_texto(e.control.value):
-            e.control.error_text = None
-            e.control.update()
-        else:
-            e.control.error_text = "Solo se permiten letras"
-            e.control.update()
+        e.control.error_text = None if Validacion.validar_texto(e.control.value) else "Solo se permiten letras"
+        e.control.update()
 
     def validar_rif(self, e):
-        if Validacion.validar_rif(e.control.value):
-            e.control.error_text = None
-            e.control.update()
-        else:
-            e.control.error_text = "Formato RIF inválido"
-            e.control.update()
+        e.control.error_text = None if Validacion.validar_rif(e.control.value) else "Formato RIF inválido"
+        e.control.update()
+
+
 class Validacion:
     @staticmethod
     def validar_fecha(fecha):
@@ -175,7 +191,6 @@ class Validacion:
     def validar_texto(texto):
         patron = r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$'
         return re.match(patron, texto) is not None
-
 
     @staticmethod
     def validar_rif(rif):

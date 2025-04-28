@@ -1,6 +1,6 @@
 import flet as ft
 from auth.auth import AuthControlador
-from utils.alerts import mostrar_mensaje
+from utils.alerts import UtilMensajes
 from utils.colors import Colores 
 
 class LoginPage(ft.View):
@@ -40,7 +40,8 @@ class LoginPage(ft.View):
             label="Usuario",
             label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
             filled=True,
-            border_color="white",
+            border_color=Colores.BLANCO,    
+            hint_text="Ingrese su usuario",
             bgcolor=Colores.GRIS,
             width=300,
             height=50,
@@ -50,11 +51,12 @@ class LoginPage(ft.View):
             focus_color=ft.colors.BLUE_GREY,
         )
         self.password = ft.TextField(
-            label="Contraseña",
+            label="Contraseña", 
+            hint_text="Ingrese su contraseña",
             label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
             password=True,
             filled=True,
-            border_color="white",
+            border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
             width=300,
             height=50,
@@ -164,9 +166,9 @@ class LoginPage(ft.View):
             rol = self.auth_controlador.autenticar(username, password)
             if rol:
                 
-                mostrar_mensaje(self.page, f"Bienvenido {rol}", tipo="success")
+                UtilMensajes.mostrar_snack(self.page, f"Bienvenido {rol}", tipo="success")
                 self.page.go("/menu")
             else:
-                mostrar_mensaje(self.page, "Credenciales incorrectas", tipo="error")
+                UtilMensajes.mostrar_snack(self.page, "Credenciales incorrectas", tipo="error")
         except Exception as err:
-            mostrar_mensaje(self.page, f"Error: {err}", tipo="error")
+            UtilMensajes.mostrar_snack(self.page, f"Error: {err}", tipo="error")

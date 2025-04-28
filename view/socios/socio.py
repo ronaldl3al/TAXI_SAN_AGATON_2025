@@ -1,16 +1,18 @@
 import flet as ft
-from utils.alerts import mostrar_mensaje, mostrar_bottomSheet
 from utils.colors import Colores
+from utils.alerts import UtilMensajes
 from auth.auth import AuthControlador
 from datos.datos import datos_de_prueba
 
 
 class SociosTable:
-    def __init__(self, socios_page, socios_data):
-        self.socios_page = socios_page
-        self.data_table = self._crear_tabla(socios_data)
+    def __init__(self, pagina, socios):
+        self.pagina = pagina
+        self._socios_original = socios
+        self.anchos = [30, 70, 70, 60, 80, 100, 85, 70, 65]  # ancho por columna
+        self.data_table = self._armar_tabla(socios)
 
-    def _crear_tabla(self, socios):
+    def _armar_tabla(self, socios):
         return ft.DataTable(
             bgcolor=ft.colors.TRANSPARENT,
             border_radius=20,
@@ -23,46 +25,103 @@ class SociosTable:
             rows=self._filas(socios),
         )
 
+    def _columna(self, texto, ancho):
+        estilos = dict(
+            weight="w700",
+            size=15,
+            color=Colores.AMARILLO1,
+            font_family="Arial Black italic"
+        )
+        return ft.DataColumn(
+            ft.Container(
+                width=ancho,
+                content=ft.Text(
+                            texto,
+                            no_wrap=True,
+                            overflow="ellipsis",  # o "clip" si no quieres los "..."
+                            **estilos
+                        )
+            )
+        )
+
     def _columnas(self):
-        estilos = dict(weight="w700", size=15, color=Colores.AMARILLO1, font_family="Arial Black italic")
-        return [
-            ft.DataColumn(ft.Text(label, **estilos))
-            for label in [
-                "Control", "Nombres", "Apellidos", "Cédula",
-                "Teléfono", "Dirección", "RIF", "Fecha Nac.", "Acciones"
-            ]
+        etiquetas = [
+            "Ctrl", "Nombres", "Apellidos", "Cédula",
+            "Teléfono", "Dirección", "RIF", "Fecha Nac.", "Acciones"
         ]
+        return [
+            self._columna(et, self.anchos[i])
+            for i, et in enumerate(etiquetas)
+        ]
+
+    def _fila(self, socio):
+        valores = [
+            socio["numero_control"],
+            socio["nombres"],
+            socio["apellidos"],
+            socio["cedula"],
+            socio["numero_telefono"],
+            socio["direccion"],
+            socio["rif"],
+            socio["fecha_nacimiento"],
+            ""  # celda vacía para acciones
+        ]
+        celdas = []
+        for i, val in enumerate(valores[:-1]):
+            celdas.append(
+                ft.DataCell(
+                    ft.Container(
+                        width=self.anchos[i],
+                        content=ft.Text(val, color=Colores.BLANCO, size=13,overflow="ellipsis",),
+                    )
+                )
+            )
+        acciones = ft.Row(self._botones_accion(socio), alignment="start")
+        celdas.append(
+            ft.DataCell(
+                ft.Container(
+                    width=self.anchos[-1],
+                    content=acciones
+                )
+            )
+        )
+        return ft.DataRow(cells=celdas)
 
     def _filas(self, socios):
-        return [ft.DataRow(cells=self._celdas(s)) for s in socios]
-
-    def _celdas(self, socio):
-        datos = [
-            socio['numero_control'], socio['nombres'], socio['apellidos'],
-            socio['cedula'], socio['numero_telefono'], socio['direccion'],
-            socio['rif'], socio['fecha_nacimiento']
-        ]
-        celdas = [ft.DataCell(ft.Text(d, color=Colores.BLANCO, size=13)) for d in datos]
-        acciones = ft.Row(self._botones_accion(socio), alignment="start")
-        celdas.append(ft.DataCell(acciones))
-        return celdas
+        return [self._fila(s) for s in socios]
 
     def _botones_accion(self, socio):
         return [
             ft.IconButton(
                 icon=ft.icons.EDIT,
                 icon_color="#F4F9FA",
-                on_click=lambda e, s=socio: self.socios_page.mostrar_bottomsheet_editar(s)
+                on_click=lambda e, s=socio: self.pagina.mostrar_sheet(
+                    self.pagina, "Editar Socio", tipo="formulario", socio=s
+                )
             ),
             ft.IconButton(
                 icon=ft.icons.DELETE_OUTLINE,
                 icon_color="#eb3936",
-                on_click=lambda e, s=socio: self.socios_page.confirmar_eliminar_socio(s)
+                on_click=lambda e, s=socio: UtilMensajes.mostrar_snack(
+                    self.pagina, f"¿Eliminar socio {s['nombres']}?", tipo="confirmar"
+                )
             )
         ]
 
-    def actualizar(self, nuevos_socios):
-        self.data_table.rows = self._filas(nuevos_socios)
+    def filtrar(self, texto):
+        texto = texto.lower()
+        filtrados = [
+            s for s in self._socios_original
+            if texto in s["nombres"].lower()
+            or texto in s["apellidos"].lower()
+            or texto in s["cedula"].lower()
+            or texto in s["numero_control"].lower()
+            or texto in s["numero_telefono"].lower()
+        ]
+        self.actualizar(filtrados)
+
+    def actualizar(self, socios):
+        self.data_table.rows = self._filas(socios)
         self.data_table.update()
 
 
@@ -71,6 +130,21 @@ class SociosView:
         self.page = page
         self.rol = AuthControlador.obtener_rol()
         self.tabla = SociosTable(self, datos_de_prueba)
+        self.buscador = ft.TextField(
+            label="Buscar",
+            prefix_icon=ft.icons.SEARCH,
+            border_radius=5,
+            width=500,
+            label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
+            hint_text="Buscar por nombre, apellido, cédula, control...",
+            bgcolor=Colores.GRIS,
+            on_change=self._al_buscar,
+            border_color=Colores.BLANCO,
+            focused_border_color=Colores.AMARILLO1,
+        )
+
+    def _al_buscar(self, e):
+        self.tabla.filtrar(self.buscador.value)
 
     def _boton_agregar(self):
         if self.rol in ["Admin", "Editor"]:
@@ -78,11 +152,13 @@ class SociosView:
                 icon=ft.icons.ADD,
                 icon_size=40,
                 style=ft.ButtonStyle(color="#06F58E"),
-                on_click=lambda e: mostrar_bottomSheet(self.page, " AGREGAR SOCIO", tipo="formulario")
+                on_click=lambda e: UtilMensajes.mostrar_sheet(
+                    self.page, "Agregar Socio", tipo="formulario", socio=None
+                )
             )
         return ft.Container()
 
-    def _botones_test(self):
+    def _botones_prueba(self):
         return ft.Row(
             controls=[
                 ft.ElevatedButton(
@@ -91,7 +167,9 @@ class SociosView:
                     icon_color=Colores.AZUL2,
                     bgcolor=Colores.AMARILLO1,
                     color=Colores.AZUL2,
-                    on_click=lambda e: mostrar_mensaje(self.page, "Documento PDF generado correctamente", tipo="pdf")
+                    on_click=lambda e: UtilMensajes.mostrar_snack(
+                        self.page, "Documento PDF generado correctamente", tipo="pdf"
+                    )
                 ),
                 self._boton_agregar()
             ],
@@ -99,32 +177,30 @@ class SociosView:
             spacing=10
         )
 
-    def mostrar_bottomsheet_editar(self, socio):
-        # Delegar o implementar como antes
-        mostrar_bottomSheet(self.page, "Editar Socio", socio=socio)
-
-    def confirmar_eliminar_socio(self, socio):
-        # Delegar o implementar como antes
-        mostrar_mensaje(self.page, f"¿Eliminar socio {socio['nombres']}?", tipo="confirm")
-
     def construir(self):
-        header = ft.Row(
+        encabezado = ft.Row(
             controls=[
                 ft.Text("SOCIOS", size=20, weight="bold", color=Colores.AMARILLO1),
-                self._botones_test()
+                self.buscador,
+                self._botones_prueba(),
             ],
             alignment="spaceBetween"
         )
         contenido = ft.Column(
-            controls=[header, self.tabla.data_table],
-            spacing=5,
-            scroll=ft.ScrollMode.AUTO
+            controls=[
+                encabezado,
+                self.tabla.data_table
+            ],
+            spacing=10,
+            scroll=ft.ScrollMode.AUTO,
+            alignment=ft.MainAxisAlignment.START
         )
         return ft.Container(
             content=contenido,
             bgcolor=ft.colors.TRANSPARENT,
             padding=5,
-            expand=True
+            expand=True,
+            alignment=ft.alignment.top_left
         )
 
 
