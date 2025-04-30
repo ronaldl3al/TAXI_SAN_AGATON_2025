@@ -8,8 +8,6 @@ class SociosForm:
     def __init__(self, socios_page, titulo, accion, socio=None):
         self.socios_page = socios_page
         self.accion = accion
-
-        # Creamos los campos como atributos
         self.campo_control = ft.TextField(
             label="Control",
             border_radius=5,
@@ -88,7 +86,7 @@ class SociosForm:
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=370,
-            max_length=50,
+            max_length=30,
             hint_text="Municipio/Urb/Sector/Calle/Casa",
             multiline=True,
         )
@@ -135,10 +133,8 @@ class SociosForm:
 
     def guardar_socio(self):
         try:
-            # ... lógica de guardado ...
-            UtilMensajes.mostrar_snack(self.socios_page, "Socio guardado con éxito", tipo="success")
 
-            # Limpiar todos los campos tras guardar
+            UtilMensajes.mostrar_snack(self.socios_page, "Socio guardado con éxito", tipo="success")
             for campo in [
                 self.campo_control,
                 self.campo_nombres,

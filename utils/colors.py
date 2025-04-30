@@ -7,7 +7,7 @@ class Colores:
     ROJO = "#330100"    
     GRIS = "#25262A"     
     AZUL = "#192731"
-    NEGRO0 = "#232325"     
+    NEGRO0 = "#25252325"     
     NEGRO = "#101010"
     BLANCO = "#FFFFFF"
     NEGRO1 = "#101111"

@@ -70,9 +70,8 @@ class MenuPage(ft.View):
                 controls=[], 
                 spacing=10
             ),
-            # bgcolor=ft.Colors.WHITE,  
+    
             expand=True,
-            # padding=10 
         )
 
         barra_lateral = ft.Container(
@@ -89,7 +88,7 @@ class MenuPage(ft.View):
             end=ft.alignment.bottom_center,
             colors=[Colores.GRIS, Colores.AZUL2]
             ),
-            width=200,
+            width=170,
             padding=10,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
             border_radius=ft.BorderRadius(2, 2, 2, 2),
@@ -99,7 +98,7 @@ class MenuPage(ft.View):
         barra_superior = ft.Container(
             content=ft.Row(
                 controls=[
-                    ft.Text("Linea San Agatón", color=Colores.AZUL2, size=22, weight="bold", expand=True),
+                    ft.Text(" Linea San Agatón", color=Colores.NEGRO, size=30, weight="bold", expand=True,font_family="Arial Black Italic",italic=True),
                     ft.IconButton(
                         icon=ft.icons.LOGOUT,
                         icon_color=Colores.NEGRO1,
@@ -117,7 +116,7 @@ class MenuPage(ft.View):
             ),
             height=50,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
-            padding=10,
+            
             border_radius=ft.BorderRadius(2, 2, 2, 2),
             alignment=ft.alignment.center_left
         )
@@ -125,23 +124,34 @@ class MenuPage(ft.View):
 
         self.controls = [
             ft.Container(
-                gradient=ft.RadialGradient(
-                    center=ft.alignment.top_center,
-                    radius=1,
-                    colors=[Colores.NEGRO1, Colores.NEGRO2, Colores.AZUL2]
+            gradient=ft.RadialGradient(
+                center=ft.alignment.top_center,
+                radius=1,
+                colors=[Colores.NEGRO1, Colores.NEGRO2, Colores.AZUL2]
+            ),
+            content=ft.Stack(
+                controls=[
+                ft.Image(
+                    src="https://iili.io/3XTug5P.png",
+                    fit=ft.ImageFit.CONTAIN,
+                    opacity=0.06,
+                    expand=True
                 ),
-                content=ft.Column(
+                ft.Column(
                     controls=[
-                        barra_superior,
-                        ft.Row(
-                            controls=[barra_lateral, self.area_contenido],
-                            expand=True
-                        )
+                    barra_superior,
+                    ft.Row(
+                        controls=[barra_lateral, self.area_contenido],
+                        expand=True
+                    )
                     ],
                     expand=True,
                     spacing=5  
-                ),
+                )
+                ],
                 expand=True
+            ),
+            expand=True
             )
         ]
 

@@ -9,13 +9,13 @@ class SociosTable:
     def __init__(self, pagina, socios):
         self.pagina = pagina
         self._socios_original = socios
-        self.anchos = [30, 70, 70, 60, 80, 100, 85, 70, 65]  # ancho por columna
+        self.anchos = [25, 65, 70, 60, 80, 130, 74, 68, 65]  
         self.data_table = self._armar_tabla(socios)
 
     def _armar_tabla(self, socios):
         return ft.DataTable(
-            bgcolor=ft.colors.TRANSPARENT,
-            border_radius=20,
+            bgcolor=Colores.NEGRO0,
+            border_radius=5,
             heading_row_color=Colores.AZUL3,
             data_row_color={
                 "hovered": Colores.AZUL,
@@ -38,7 +38,6 @@ class SociosTable:
                 content=ft.Text(
                             texto,
                             no_wrap=True,
-                            overflow="ellipsis",  # o "clip" si no quieres los "..."
                             **estilos
                         )
             )
@@ -47,7 +46,7 @@ class SociosTable:
     def _columnas(self):
         etiquetas = [
             "Ctrl", "Nombres", "Apellidos", "Cédula",
-            "Teléfono", "Dirección", "RIF", "Fecha Nac.", "Acciones"
+            "Teléfono", "Dirección", "RIF", "F. Nac.", "Acciones"
         ]
         return [
             self._columna(et, self.anchos[i])
@@ -64,7 +63,7 @@ class SociosTable:
             socio["direccion"],
             socio["rif"],
             socio["fecha_nacimiento"],
-            ""  # celda vacía para acciones
+            ""  
         ]
         celdas = []
         for i, val in enumerate(valores[:-1]):
@@ -72,7 +71,7 @@ class SociosTable:
                 ft.DataCell(
                     ft.Container(
                         width=self.anchos[i],
-                        content=ft.Text(val, color=Colores.BLANCO, size=13,overflow="ellipsis",),
+                        content=ft.Text(val, color=Colores.BLANCO, size=13,),
                     )
                 )
             )
@@ -180,11 +179,21 @@ class SociosView:
     def construir(self):
         encabezado = ft.Row(
             controls=[
-                ft.Text("SOCIOS", size=20, weight="bold", color=Colores.AMARILLO1),
-                self.buscador,
-                self._botones_prueba(),
+            ft.Text(
+                "SOCIOS",
+                size=30,
+                weight="bold",
+                color=Colores.AMARILLO1,
+                font_family="Arial Black italic"
+            ),
+            self.buscador,
+            self._botones_prueba(),
             ],
             alignment="spaceBetween"
+        )
+        encabezado = ft.Container(
+            content=encabezado,
+            margin=15  # Agregar margen de 10px
         )
         contenido = ft.Column(
             controls=[
