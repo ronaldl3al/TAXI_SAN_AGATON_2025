@@ -6,10 +6,11 @@ from datos.datos import datos_de_prueba
 
 
 class SociosTable:
-    def __init__(self, pagina, socios):
-        self.pagina = pagina
+    def __init__(self, pagina_view, socios):
+        # pagina_view es la instancia de SociosView
+        self.pagina_view = pagina_view
         self._socios_original = socios
-        self.anchos = [25, 65, 70, 60, 80, 130, 74, 68, 65]  
+        self.anchos = [20, 65, 70, 65, 85, 130, 77, 70, 62]
         self.data_table = self._armar_tabla(socios)
 
     def _armar_tabla(self, socios):
@@ -35,23 +36,16 @@ class SociosTable:
         return ft.DataColumn(
             ft.Container(
                 width=ancho,
-                content=ft.Text(
-                            texto,
-                            no_wrap=True,
-                            **estilos
-                        )
+                content=ft.Text(texto, no_wrap=True, **estilos)
             )
         )
 
     def _columnas(self):
         etiquetas = [
-            "Ctrl", "Nombres", "Apellidos", "Cédula",
+            "N°", "Nombres", "Apellidos", "Cédula",
             "Teléfono", "Dirección", "RIF", "F. Nac.", "Acciones"
         ]
-        return [
-            self._columna(et, self.anchos[i])
-            for i, et in enumerate(etiquetas)
-        ]
+        return [self._columna(et, self.anchos[i]) for i, et in enumerate(etiquetas)]
 
     def _fila(self, socio):
         valores = [
@@ -63,7 +57,7 @@ class SociosTable:
             socio["direccion"],
             socio["rif"],
             socio["fecha_nacimiento"],
-            ""  
+            ""
         ]
         celdas = []
         for i, val in enumerate(valores[:-1]):
@@ -71,11 +65,11 @@ class SociosTable:
                 ft.DataCell(
                     ft.Container(
                         width=self.anchos[i],
-                        content=ft.Text(val, color=Colores.BLANCO, size=13,),
+                        content=ft.Text(val, color=Colores.BLANCO, size=13, no_wrap=True, overflow="ellipsis")
                     )
                 )
             )
-        acciones = ft.Row(self._botones_accion(socio), alignment="start")
+        acciones = ft.Row(self._botones_accion(socio), alignment="end")
         celdas.append(
             ft.DataCell(
                 ft.Container(
@@ -90,19 +84,25 @@ class SociosTable:
         return [self._fila(s) for s in socios]
 
     def _botones_accion(self, socio):
+        # usa self.pagina_view.page para obtener el ft.Page
+        page = self.pagina_view.page
         return [
             ft.IconButton(
                 icon=ft.icons.EDIT,
                 icon_color="#F4F9FA",
-                on_click=lambda e, s=socio: self.pagina.mostrar_sheet(
-                    self.pagina, "Editar Socio", tipo="formulario", socio=s
+                on_click=lambda e, s=socio: UtilMensajes.mostrar_sheet(
+                    page, "Editar Socio", tipo="formulario", socio=s
                 )
             ),
             ft.IconButton(
                 icon=ft.icons.DELETE_OUTLINE,
                 icon_color="#eb3936",
-                on_click=lambda e, s=socio: UtilMensajes.mostrar_snack(
-                    self.pagina, f"¿Eliminar socio {s['nombres']}?", tipo="confirmar"
+                on_click=lambda e, s=socio: UtilMensajes.confirmar(
+                    page=page,
+                    titulo="Confirmar Eliminación",
+                    mensaje=f"¿Está seguro de eliminar al socio {s['nombres']}?",
+                    on_confirm=lambda e, s=socio: print(f"Socio {s['nombres']} eliminado"),
+                    on_cancel=lambda e: print("Eliminación cancelada")
                 )
             )
         ]
@@ -179,27 +179,21 @@ class SociosView:
     def construir(self):
         encabezado = ft.Row(
             controls=[
-            ft.Text(
-                "SOCIOS",
-                size=30,
-                weight="bold",
-                color=Colores.AMARILLO1,
-                font_family="Arial Black italic"
-            ),
-            self.buscador,
-            self._botones_prueba(),
+                ft.Text(
+                    "SOCIOS",
+                    size=30,
+                    weight="bold",
+                    color=Colores.AMARILLO1,
+                    font_family="Arial Black italic"
+                ),
+                self.buscador,
+                self._botones_prueba(),
             ],
             alignment="spaceBetween"
         )
-        encabezado = ft.Container(
-            content=encabezado,
-            margin=15  # Agregar margen de 10px
-        )
+        encabezado = ft.Container(content=encabezado, margin=15)
         contenido = ft.Column(
-            controls=[
-                encabezado,
-                self.tabla.data_table
-            ],
+            controls=[encabezado, self.tabla.data_table],
             spacing=10,
             scroll=ft.ScrollMode.AUTO,
             alignment=ft.MainAxisAlignment.START

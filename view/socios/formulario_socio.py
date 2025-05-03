@@ -4,12 +4,17 @@ from datetime import datetime
 from utils.colors import Colores
 from utils.alerts import UtilMensajes
 
+
 class SociosForm:
     def __init__(self, socios_page, titulo, accion, socio=None):
         self.socios_page = socios_page
         self.accion = accion
+        self.socio = socio or {}
+
+        # Campos con valor inicial si es edición
         self.campo_control = ft.TextField(
             label="Control",
+            value=self.socio.get("numero_control", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -21,6 +26,7 @@ class SociosForm:
         )
         self.campo_nombres = ft.TextField(
             label="Nombres",
+            value=self.socio.get("nombres", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -32,6 +38,7 @@ class SociosForm:
         )
         self.campo_apellidos = ft.TextField(
             label="Apellidos",
+            value=self.socio.get("apellidos", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -43,6 +50,7 @@ class SociosForm:
         )
         self.campo_cedula = ft.TextField(
             label="Cédula",
+            value=self.socio.get("cedula", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -55,6 +63,7 @@ class SociosForm:
         )
         self.campo_fecha = ft.TextField(
             label="Fecha Nacimiento",
+            value=self.socio.get("fecha_nacimiento", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -67,6 +76,7 @@ class SociosForm:
         )
         self.campo_telefono = ft.TextField(
             label="Teléfono",
+            value=self.socio.get("numero_telefono", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -80,6 +90,7 @@ class SociosForm:
         )
         self.campo_direccion = ft.TextField(
             label="Dirección",
+            value=self.socio.get("direccion", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -92,6 +103,7 @@ class SociosForm:
         )
         self.campo_rif = ft.TextField(
             label="RIF",
+            value=self.socio.get("rif", ""),
             border_radius=5,
             border_color=Colores.BLANCO,
             bgcolor=Colores.GRIS,
@@ -133,22 +145,15 @@ class SociosForm:
 
     def guardar_socio(self):
         try:
-
             UtilMensajes.mostrar_snack(self.socios_page, "Socio guardado con éxito", tipo="success")
             for campo in [
-                self.campo_control,
-                self.campo_nombres,
-                self.campo_apellidos,
-                self.campo_cedula,
-                self.campo_fecha,
-                self.campo_telefono,
-                self.campo_direccion,
-                self.campo_rif,
+                self.campo_control, self.campo_nombres, self.campo_apellidos,
+                self.campo_cedula, self.campo_fecha, self.campo_telefono,
+                self.campo_direccion, self.campo_rif,
             ]:
                 campo.value = ""
                 campo.error_text = None
                 campo.update()
-
         except Exception as err:
             UtilMensajes.mostrar_snack(self.socios_page, f"Error al guardar: {err}", tipo="error")
 
