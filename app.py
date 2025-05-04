@@ -28,4 +28,5 @@ def main(page: ft.Page):
     MyApp(page)
 
 #ft.app(target=main, view=ft.WEB_BROWSER)
+
 ft.app(target=main, view=ft.FLET_APP)

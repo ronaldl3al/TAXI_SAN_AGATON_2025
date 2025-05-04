@@ -10,7 +10,8 @@ class SociosTable:
         # pagina_view es la instancia de SociosView
         self.pagina_view = pagina_view
         self._socios_original = socios
-        self.anchos = [20, 65, 70, 65, 85, 130, 77, 70, 62]
+        # Anchos de columna en píxeles
+        self.anchos = [20, None, None, 65, 85, None, 77, 70, None]
         self.data_table = self._armar_tabla(socios)
 
     def _armar_tabla(self, socios):
@@ -22,6 +23,10 @@ class SociosTable:
                 "hovered": Colores.AZUL,
                 "selected": Colores.AZUL2
             },
+            # Altura mínima y máxima de filas para permitir varias líneas
+            data_row_min_height=40,
+            data_row_max_height=float("inf"),
+            heading_row_height=65,
             columns=self._columnas(),
             rows=self._filas(socios),
         )
@@ -65,10 +70,19 @@ class SociosTable:
                 ft.DataCell(
                     ft.Container(
                         width=self.anchos[i],
-                        content=ft.Text(val, color=Colores.BLANCO, size=13, no_wrap=True, overflow="ellipsis")
+                        content=ft.Text(
+                            val,
+                            color=Colores.BLANCO,
+                            size=12,
+                            no_wrap=False,  # permitir ajuste de línea
+                            weight="bold",
+                            font_family="Arial"
+                            
+                        )
                     )
                 )
             )
+
         acciones = ft.Row(self._botones_accion(socio), alignment="end")
         celdas.append(
             ft.DataCell(
@@ -84,7 +98,6 @@ class SociosTable:
         return [self._fila(s) for s in socios]
 
     def _botones_accion(self, socio):
-        # usa self.pagina_view.page para obtener el ft.Page
         page = self.pagina_view.page
         return [
             ft.IconButton(
@@ -101,11 +114,16 @@ class SociosTable:
                     page=page,
                     titulo="Confirmar Eliminación",
                     mensaje=f"¿Está seguro de eliminar al socio {s['nombres']}?",
-                    on_confirm=lambda e, s=socio: print(f"Socio {s['nombres']} eliminado"),
+                    on_confirm=lambda e, s=socio: self.eliminar_socio_api(s),
                     on_cancel=lambda e: print("Eliminación cancelada")
                 )
             )
         ]
+
+    def eliminar_socio_api(self, socio):
+        # Lógica para conectar con la API y eliminar al socio
+        print(f"Conectando a la API para eliminar al socio {socio['nombres']}...")
+        # Aquí iría tu llamada real a requests.delete(...)
 
     def filtrar(self, texto):
         texto = texto.lower()

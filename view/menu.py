@@ -2,6 +2,7 @@ import flet as ft
 from view.socios.socio import vista_socios
 from utils.colors import Colores
 from view.menus.menu import vista_menu
+from utils.alerts import UtilMensajes
 
 class BotonesNevegacion:
     @staticmethod
@@ -97,26 +98,31 @@ class MenuPage(ft.View):
 
         barra_superior = ft.Container(
             content=ft.Row(
-                controls=[
-                    ft.Text(" Linea San Agatón", color=Colores.NEGRO, size=30, weight="bold", expand=True,font_family="Arial Black Italic",italic=True),
-                    ft.IconButton(
-                        icon=ft.icons.LOGOUT,
-                        icon_color=Colores.NEGRO1,
-                        tooltip="Cerrar sesión",
-                        on_click=lambda _: pagina.go("/login")
-                    )
-                ],
-                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                vertical_alignment=ft.CrossAxisAlignment.CENTER
+            controls=[
+                ft.Text(" Linea San Agatón", color=Colores.NEGRO, size=30, weight="bold", expand=True, font_family="Arial Black Italic", italic=True),
+                ft.IconButton(
+                icon=ft.icons.LOGOUT,
+                icon_color=Colores.NEGRO1,
+                tooltip="Cerrar sesión",
+                on_click=lambda e: UtilMensajes.confirmar(
+                    page=pagina,
+                    titulo="Confirmar Cierre de Sesión",
+                    mensaje="¿Está seguro de cerrar sesión?",
+                    on_confirm=lambda e: pagina.go("/login"),
+                    on_cancel=lambda e: print("Cierre de sesión cancelado")
+                )
+                )
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER
             ),
             gradient=ft.LinearGradient(
-                begin=ft.alignment.center_right,
-                end=ft.alignment.center_left,
-                colors=[Colores.AMARILLO1, Colores.AMARILLO1]
+            begin=ft.alignment.center_right,
+            end=ft.alignment.center_left,
+            colors=[Colores.AMARILLO1, Colores.AMARILLO1]
             ),
             height=50,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
-            
             border_radius=ft.BorderRadius(2, 2, 2, 2),
             alignment=ft.alignment.center_left
         )
