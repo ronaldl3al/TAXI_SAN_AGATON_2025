@@ -76,8 +76,8 @@ class SociosTable:
                             size=12,
                             no_wrap=False,  # permitir ajuste de línea
                             weight="bold",
-                            font_family="Arial"
-                            
+                            font_family="Arial",
+                            selectable=True,
                         )
                     )
                 )
@@ -99,26 +99,37 @@ class SociosTable:
 
     def _botones_accion(self, socio):
         page = self.pagina_view.page
-        return [
-            ft.IconButton(
-                icon=ft.icons.EDIT,
-                icon_color="#F4F9FA",
-                on_click=lambda e, s=socio: UtilMensajes.mostrar_sheet(
-                    page, "Editar Socio", tipo="formulario", socio=s
-                )
-            ),
-            ft.IconButton(
-                icon=ft.icons.DELETE_OUTLINE,
-                icon_color="#eb3936",
-                on_click=lambda e, s=socio: UtilMensajes.confirmar(
-                    page=page,
-                    titulo="Confirmar Eliminación",
-                    mensaje=f"¿Está seguro de eliminar al socio {s['nombres']}?",
-                    on_confirm=lambda e, s=socio: self.eliminar_socio_api(s),
-                    on_cancel=lambda e: print("Eliminación cancelada")
+        rol = self.pagina_view.rol
+
+        botones = []
+
+        if rol in ["Admin", "Editor"]:
+            botones.append(
+                ft.IconButton(
+                    icon=ft.icons.EDIT,
+                    icon_color="#F4F9FA",
+                    on_click=lambda e, s=socio: UtilMensajes.mostrar_sheet(
+                        page, "Editar Socio", tipo="formulario", socio=s
+                    )
                 )
             )
-        ]
+
+        if rol == "Admin":
+            botones.append(
+                ft.IconButton(
+                    icon=ft.icons.DELETE_OUTLINE,
+                    icon_color="#eb3936",
+                    on_click=lambda e, s=socio: UtilMensajes.confirmar(
+                        page=page,
+                        titulo="Confirmar Eliminación",
+                        mensaje=f"¿Está seguro de eliminar al socio {s['nombres']}?",
+                        on_confirm=lambda e, s=socio: self.eliminar_socio_api(s),
+                        on_cancel=lambda e: print("Eliminación cancelada")
+                    )
+                )
+            )
+
+        return botones
 
     def eliminar_socio_api(self, socio):
         # Lógica para conectar con la API y eliminar al socio
