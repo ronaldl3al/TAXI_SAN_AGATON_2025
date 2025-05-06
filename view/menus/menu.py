@@ -4,7 +4,7 @@ from datos.datos import datos_de_prueba
 class Vista_Menu:
     def __init__(self, page: ft.Page):
         self.page = page
-        self.card_socios = None  # Referencia a la tarjeta de socios
+        self.card_socios = None 
         self.menu_container = self.build()
 
     def design_cards(self):
@@ -37,7 +37,7 @@ class Vista_Menu:
                 height=120,
                 padding=10,
                 margin=5,
-                border_radius=15,
+                border_radius=0,
                 bgcolor=card_color,
                 shadow=ft.BoxShadow(
                     color="black", spread_radius=1, blur_radius=5, offset=ft.Offset(2, 2)
@@ -54,7 +54,6 @@ class Vista_Menu:
                 )
             )
 
-        # Creamos la tarjeta de socios como atributo de instancia
         self.card_socios = card(
             "SOCIOS", 
             str(len(datos_de_prueba)),
@@ -81,7 +80,6 @@ class Vista_Menu:
     def actualizar_contador_socios(self):
         """Actualiza el contador de socios dinámicamente"""
         nueva_cantidad = len(datos_de_prueba)
-        # Actualizamos el texto del valor en la tarjeta
         self.card_socios.content.controls[2].value = str(nueva_cantidad)
         self.card_socios.update()
 

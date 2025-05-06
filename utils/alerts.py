@@ -27,12 +27,13 @@ class UtilMensajes:
     def mostrar_sheet(page, titulo, tipo="mensaje", socio=None):
         if tipo == "formulario":
             from view.socios.formulario_socio import SociosForm
-            fondo = Colores.AZUL2
+            fondo = Colores.AZUL4
             contenido_form = SociosForm(
                 socios_page=page,
                 titulo=titulo,
                 accion="agregar" if socio is None else "actualizar",
                 socio=socio
+                
             ).formulario
 
             contenido = ft.Column([
@@ -68,7 +69,7 @@ class UtilMensajes:
             content=ft.Container(
                 padding=20,
                 bgcolor=fondo,
-                border_radius=5,
+                border_radius=None,
                 height=400,
                 content=contenido
             )
@@ -78,54 +79,25 @@ class UtilMensajes:
 
 
     @staticmethod
-    def confirmar(page, titulo, mensaje, on_confirm, on_cancel=None, modal=True):
-        """
-        Muestra un CupertinoAlertDialog con dos acciones: Confirmar y Cancelar.
-        - on_confirm(e): callback al pulsar "Sí"
-        - on_cancel(e): callback al pulsar "No" (opcional)
-        """
-        def _cerrar(e):
-            page.close(dialog)
-
-        acciones = [
-            ft.CupertinoDialogAction(
-                text="Sí",
-                is_default_action=True,
-                on_click=lambda e: (on_confirm(e), _cerrar(e))
-            ),
-            ft.CupertinoDialogAction(
-                text="No",
-                is_destructive_action=True,
-                on_click=lambda e: (on_cancel(e) if on_cancel else None, _cerrar(e))
-            ),
-        ]
-        dialog = ft.CupertinoAlertDialog(
-            title=ft.Text(titulo),
-            content=ft.Text(mensaje),
-            actions=acciones,
-            modal=modal,
-        )
-        page.open(dialog)
-
-
-    @staticmethod
     def confirmar_material(page, titulo, mensaje, on_confirm, on_cancel=None, modal=True):
-        """
-        Muestra un AlertDialog material con dos botones: Confirmar y Cancelar.
-        - on_confirm(e): callback al pulsar "Sí"
-        - on_cancel(e): callback al pulsar "No" (opcional)
-        """
         def _cerrar(e):
             page.close(dialog)
 
         acciones = [
-            ft.TextButton(
-                text="No",
+            ft.Row(
+            controls=[
+                ft.IconButton(
+                icon=ft.Icons.CANCEL,
+                icon_color=ft.colors.RED,
                 on_click=lambda e: (on_cancel(e) if on_cancel else None, _cerrar(e))
-            ),
-            ft.TextButton(
-                text="Sí",
+                ),
+                ft.IconButton(
+                icon=ft.Icons.CHECK_CIRCLE,
+                icon_color=ft.colors.GREEN,
                 on_click=lambda e: (on_confirm(e), _cerrar(e))
+                ),
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN
             ),
         ]
         dialog = ft.AlertDialog(
@@ -133,5 +105,7 @@ class UtilMensajes:
             content=ft.Text(mensaje),
             actions=acciones,
             modal=modal,
+            bgcolor=Colores.GRIS,
+            shape=ft.RoundedRectangleBorder(radius=0),  
         )
         page.open(dialog)

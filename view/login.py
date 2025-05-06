@@ -8,7 +8,7 @@ class LoginPage(ft.View):
         super().__init__(route="/login")
         self.page = page
         
-        self.page.title = "INICIO DE SESIÓN"
+        self.page.title = "SAN AGATÓN"
         self.auth_controlador = AuthControlador()
         self.vista_login()
 
@@ -40,15 +40,16 @@ class LoginPage(ft.View):
             label="Usuario",
             label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
             filled=True,
-            border_color=Colores.BLANCO,    
+            border_color=ft.colors.TRANSPARENT,    
             hint_text="Ingrese su usuario",
-            bgcolor=Colores.GRIS,
+            bgcolor=Colores.NEGRO0,
             width=300,
             height=50,
-            border_radius=5,
+            border_radius=0,
             prefix_icon=ft.icons.LOGIN,
             focused_border_color=Colores.AMARILLO1,
-            focus_color=ft.colors.BLUE_GREY,
+
+            hover_color=Colores.GRIS00
         )
         self.password = ft.TextField(
             label="Contraseña", 
@@ -56,15 +57,15 @@ class LoginPage(ft.View):
             label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
             password=True,
             filled=True,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO0,
             width=300,
             height=50,
-            border_radius=5,
+            border_radius=0,
             can_reveal_password=True,
             prefix_icon=ft.icons.PASSWORD,
             focused_border_color=Colores.AMARILLO1,
-            focus_color=ft.colors.BLUE_GREY,
+            hover_color=Colores.GRIS00
         )
         return self.username, self.password
 
@@ -107,7 +108,7 @@ class LoginPage(ft.View):
             padding=ft.padding.all(10),
             width=425,
             height=650,
-            border_radius=20,
+            border_radius=0,
             alignment=ft.alignment.center,
             shadow=ft.BoxShadow(color="black", blur_radius=15, offset=ft.Offset(4, 4)),
             gradient=ft.LinearGradient(
@@ -125,7 +126,7 @@ class LoginPage(ft.View):
                 radius=1,
                 colors=[Colores.NEGRO1,Colores.NEGRO2, Colores.AZUL2]
             ),
-            border_radius=20,
+            border_radius=0,
 
         )
 

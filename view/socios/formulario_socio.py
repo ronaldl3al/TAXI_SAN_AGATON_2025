@@ -11,75 +11,79 @@ class SociosForm:
         self.accion = accion
         self.socio = socio or {}
 
-        # Campos con valor inicial si es edición
         self.campo_control = ft.TextField(
             label="Control",
             value=self.socio.get("numero_control", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=100,
             max_length=2,
             input_filter=ft.NumbersOnlyInputFilter(),
+            hover_color=Colores.GRIS00
         )
         self.campo_nombres = ft.TextField(
             label="Nombres",
             value=self.socio.get("nombres", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=275,
             max_length=30,
             on_change=self.validar_texto,
+            hover_color=Colores.GRIS00
         )
         self.campo_apellidos = ft.TextField(
             label="Apellidos",
             value=self.socio.get("apellidos", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=275,
             max_length=30,
             on_change=self.validar_texto,
+            hover_color=Colores.GRIS00
         )
         self.campo_cedula = ft.TextField(
             label="Cédula",
             value=self.socio.get("cedula", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=125,
             max_length=11,
             hint_text="V-/E-",
             on_change=self.validar_cedula,
+            hover_color=Colores.GRIS00
         )
         self.campo_fecha = ft.TextField(
             label="Fecha Nacimiento",
             value=self.socio.get("fecha_nacimiento", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=140,
             max_length=10,
             hint_text="AAAA-MM-DD",
             on_change=self.validar_fecha_nacimiento,
+            hover_color=Colores.GRIS00
         )
         self.campo_telefono = ft.TextField(
             label="Teléfono",
             value=self.socio.get("numero_telefono", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=155,
@@ -87,26 +91,28 @@ class SociosForm:
             prefix_text="+58 ",
             hint_text="414 1234567",
             input_filter=ft.NumbersOnlyInputFilter(),
+            hover_color=Colores.GRIS00
         )
         self.campo_direccion = ft.TextField(
             label="Dirección",
             value=self.socio.get("direccion", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=370,
-            max_length=30,
+            max_length=50,
             hint_text="Municipio/Urb/Sector/Calle/Casa",
             multiline=True,
+            hover_color=Colores.GRIS00
         )
         self.campo_rif = ft.TextField(
             label="RIF",
             value=self.socio.get("rif", ""),
-            border_radius=5,
-            border_color=Colores.BLANCO,
-            bgcolor=Colores.GRIS,
+            border_radius=0,
+            border_color=ft.colors.TRANSPARENT,
+            bgcolor=Colores.NEGRO,
             focused_border_color=Colores.AMARILLO1,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=17),
             width=180,
@@ -114,24 +120,26 @@ class SociosForm:
             hint_text="V121233211",
             on_change=self.validar_rif,
             error_style=ft.TextStyle(color="#FF5733"),
+            hover_color=Colores.GRIS00
         )
 
-        # Botón principal
         boton_guardar = ft.ElevatedButton(
             content=ft.Row([
-                ft.Icon(ft.icons.SAVE, color=Colores.NEGRO1),
-                ft.Text(
-                    "Agregar" if accion == "agregar" else "Actualizar",
-                    color=Colores.NEGRO1,
-                    size=16,
-                    weight=ft.FontWeight.BOLD
-                )
+            ft.Icon(ft.icons.SAVE, color=Colores.NEGRO1),
+            ft.Text(
+                "Agregar" if accion == "agregar" else "Actualizar",
+                color=Colores.NEGRO1,
+                size=16,
+                weight=ft.FontWeight.BOLD,
+            )
             ], spacing=5),
             on_click=lambda _: self.guardar_socio(),
-            style=ft.ButtonStyle(bgcolor=Colores.AMARILLO1),
+            style=ft.ButtonStyle(
+            bgcolor=Colores.AMARILLO1,
+            shape=ft.RoundedRectangleBorder(radius=0)
+            ),
         )
 
-        # Contenedor del formulario
         self.formulario = ft.Container(
             content=ft.Column([
                 ft.Row([self.campo_nombres, self.campo_apellidos], spacing=15),
@@ -140,7 +148,8 @@ class SociosForm:
                 ft.Row([boton_guardar], alignment=ft.MainAxisAlignment.END)
             ]),
             padding=20,
-            border_radius=15,
+            border_radius=0,
+            
         )
 
     def guardar_socio(self):

@@ -7,23 +7,20 @@ from datos.datos import datos_de_prueba
 
 class SociosTable:
     def __init__(self, pagina_view, socios):
-        # pagina_view es la instancia de SociosView
         self.pagina_view = pagina_view
         self._socios_original = socios
-        # Anchos de columna en píxeles
         self.anchos = [20, None, None, 65, 85, None, 77, 70, None]
         self.data_table = self._armar_tabla(socios)
 
     def _armar_tabla(self, socios):
         return ft.DataTable(
             bgcolor=Colores.NEGRO0,
-            border_radius=5,
-            heading_row_color=Colores.AZUL3,
+            border_radius=0,
+            heading_row_color=Colores.GRIS,
             data_row_color={
                 "hovered": Colores.AZUL,
                 "selected": Colores.AZUL2
             },
-            # Altura mínima y máxima de filas para permitir varias líneas
             data_row_min_height=40,
             data_row_max_height=float("inf"),
             heading_row_height=65,
@@ -74,7 +71,7 @@ class SociosTable:
                             val,
                             color=Colores.BLANCO,
                             size=12,
-                            no_wrap=False,  # permitir ajuste de línea
+                            no_wrap=False, 
                             weight="bold",
                             font_family="Arial",
                             selectable=True,
@@ -119,7 +116,7 @@ class SociosTable:
                 ft.IconButton(
                     icon=ft.icons.DELETE_OUTLINE,
                     icon_color="#eb3936",
-                    on_click=lambda e, s=socio: UtilMensajes.confirmar(
+                    on_click=lambda e, s=socio: UtilMensajes.confirmar_material(
                         page=page,
                         titulo="Confirmar Eliminación",
                         mensaje=f"¿Está seguro de eliminar al socio {s['nombres']}?",
@@ -132,9 +129,7 @@ class SociosTable:
         return botones
 
     def eliminar_socio_api(self, socio):
-        # Lógica para conectar con la API y eliminar al socio
         print(f"Conectando a la API para eliminar al socio {socio['nombres']}...")
-        # Aquí iría tu llamada real a requests.delete(...)
 
     def filtrar(self, texto):
         texto = texto.lower()
@@ -161,14 +156,15 @@ class SociosView:
         self.buscador = ft.TextField(
             label="Buscar",
             prefix_icon=ft.icons.SEARCH,
-            border_radius=5,
+            border_radius=0,
             width=500,
             label_style=ft.TextStyle(color=Colores.BLANCO, size=20),
             hint_text="Buscar por nombre, apellido, cédula, control...",
-            bgcolor=Colores.GRIS,
+            bgcolor=ft.colors.TRANSPARENT,
             on_change=self._al_buscar,
-            border_color=Colores.BLANCO,
-            focused_border_color=Colores.AMARILLO1,
+            border_color=ft.colors.TRANSPARENT,
+            focused_border_color=Colores.BLANCO,
+            hover_color=Colores.AZUL4,
         )
 
     def _al_buscar(self, e):
@@ -186,15 +182,13 @@ class SociosView:
             )
         return ft.Container()
 
-    def _botones_prueba(self):
+    def _boton_pdf(self):
         return ft.Row(
             controls=[
-                ft.ElevatedButton(
-                    text="PDF",
+                ft.IconButton(
                     icon=ft.icons.PICTURE_AS_PDF,
-                    icon_color=Colores.AZUL2,
-                    bgcolor=Colores.AMARILLO1,
-                    color=Colores.AZUL2,
+                    icon_size=30,
+                    icon_color=Colores.AMARILLO1,
                     on_click=lambda e: UtilMensajes.mostrar_snack(
                         self.page, "Documento PDF generado correctamente", tipo="pdf"
                     )
@@ -216,23 +210,31 @@ class SociosView:
                     font_family="Arial Black italic"
                 ),
                 self.buscador,
-                self._botones_prueba(),
+                self._boton_pdf(),
             ],
             alignment="spaceBetween"
         )
-        encabezado = ft.Container(content=encabezado, margin=15)
-        contenido = ft.Column(
-            controls=[encabezado, self.tabla.data_table],
-            spacing=10,
-            scroll=ft.ScrollMode.AUTO,
-            alignment=ft.MainAxisAlignment.START
+        cont_encabezado = ft.Container(
+            content=encabezado,
+            margin=15,
         )
-        return ft.Container(
-            content=contenido,
-            bgcolor=ft.colors.TRANSPARENT,
-            padding=5,
+        cuerpo_scroll = ft.Container(
+            content=self.tabla.data_table,
             expand=True,
-            alignment=ft.alignment.top_left
+            padding=5
+        )
+        columna_scroll = ft.Column(
+            controls=[cuerpo_scroll],
+            scroll=ft.ScrollMode.AUTO,
+            expand=True,
+        )
+        return ft.Column(
+            controls=[
+                cont_encabezado,
+                columna_scroll
+            ],
+            expand=True,
+            alignment=ft.MainAxisAlignment.START
         )
 
 
