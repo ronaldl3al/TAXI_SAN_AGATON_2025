@@ -5,7 +5,7 @@ class AuthControlador:
         self.usuarios = {
             "admin": {"password": "admin", "rol": "Admin"},
             "modd": {"password": "modd", "rol": "Editor"},
-            "view": {"password": "view", "rol": "Viewer"},
+            "view": {"password": "view", "rol": "Lector"},
         }
 
     def autenticar(self, username, password):

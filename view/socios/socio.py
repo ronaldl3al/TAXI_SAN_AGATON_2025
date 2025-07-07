@@ -44,8 +44,7 @@ class SociosTable:
 
     def _columnas(self):
         etiquetas = [
-            "N°", "Nombres", "Apellidos", "Cédula",
-            "Teléfono", "Dirección", "RIF", "F. Nac.", "Acciones"
+            "N°", "Nombres", "Apellidos", "Cédula","Teléfono", "Dirección", "RIF", "F. Nac.", "Acciones"
         ]
         return [self._columna(et, self.anchos[i]) for i, et in enumerate(etiquetas)]
 

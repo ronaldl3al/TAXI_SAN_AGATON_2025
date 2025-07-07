@@ -29,7 +29,7 @@ class LoginPage(ft.View):
 
     def texto_bienvenida(self):
         return ft.Text(
-            "¡Bienvenido de vvuelta!",
+            "¡Bienvenido de vuelta!",
             weight=ft.FontWeight.BOLD,
             size=20,
             color=Colores.BLANCO,
